@@ -56,7 +56,7 @@
       }
     }
 
-    // Function to append a message to the chat window with chat bubbles
+    // Function to append a message to the chat window with user profiles and chat bubbles
     function appendMessage(displayMessage, author) {
       const li = document.createElement('li');
       li.textContent = displayMessage;
@@ -65,10 +65,24 @@
       if (author === userName) {
         li.classList.add('self-end', 'bg-blue-500', 'text-white', 'rounded-tl-md', 'rounded-bl-md', 'rounded-br-md');
       } else {
-        li.classList.add('self-start', 'bg-gray-300', 'rounded-tr-md', 'rounded-bl-md', 'rounded-br-md');
+        li.classList.add('flex', 'items-start', 'mb-2', 'max-w-xs', 'p-2', 'rounded-tr-md', 'rounded-bl-md', 'rounded-br-md', 'shadow', 'bg-gray-300');
+        
+        // User Profile
+        const profileImg = document.createElement('div');
+        profileImg.classList.add('w-8', 'h-8', 'bg-blue-500', 'rounded-full', 'mr-2');
+
+        const profileText = document.createElement('div');
+        profileText.classList.add('flex-1');
+
+        const profileName = document.createElement('div');
+        profileName.textContent = author;
+        profileName.classList.add('font-semibold', 'text-sm');
+
+        profileText.appendChild(profileName);
+        li.appendChild(profileImg);
+        li.appendChild(profileText);
       }
 
-      li.classList.add('mb-2', 'p-2', 'max-w-xs', 'break-words', 'shadow');
       chatMessages.appendChild(li);
 
       // Scroll to the bottom to show the latest message
