@@ -5,62 +5,68 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Socket.IO Chat</title>
-  <style>
-    #chat-container {
-      max-width: 600px;
-      margin: auto;
-      padding: 20px;
-    }
-  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 </head>
-<body>
+<body class="bg-gray-100 h-screen flex flex-col">
+  <div class="bg-blue-500 text-white p-4">
+    <h1 class="text-2xl font-semibold">Socket.IO Chat</h1>
+  </div>
 
-<div id="chat-container">
-  <ul id="chat-messages"></ul>
-  <input type="text" id="message-input" placeholder="Type your message...">
-  <button onclick="sendMessage()">Send</button>
-</div>
+  <div class="flex-1 flex flex-col p-4 overflow-auto">
+    <ul id="chat-messages" class="list-none flex-1"></ul>
+  </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
-<script>
-  const socket = io();
-  const chatMessages = document.getElementById('chat-messages');
-  const messageInput = document.getElementById('message-input');
+  <div class="bg-gray-200 p-4">
+    <div class="flex space-x-4">
+      <input type="text" id="message-input" placeholder="Type your message..." class="flex-1 border p-2 rounded-md focus:outline-none">
+      <button onclick="sendMessage()" class="bg-blue-500 text-white px-4 py-2 rounded-md">Send</button>
+    </div>
+  </div>
 
-  // Prompt the user for their name
-  const userName = prompt('Enter your name:');
-  socket.emit('submit_name', userName);
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const chatMessages = document.getElementById('chat-messages');
+    const messageInput = document.getElementById('message-input');
 
-  // Handle incoming chat messages and history
-  socket.on('chat_history', (chatHistory) => {
-    chatHistory.forEach(({ user, message }) => {
+    // Prompt the user for their name
+    const userName = prompt('Enter your name:');
+    socket.emit('submit_name', userName);
+
+    // Handle incoming chat messages and history
+    socket.on('chat_history', (chatHistory) => {
+      chatHistory.forEach(({ user, message }) => {
+        appendMessage(`${user}: ${message}`);
+      });
+    });
+
+    socket.on('chat_message', ({ user, message }) => {
       appendMessage(`${user}: ${message}`);
     });
-  });
 
-  socket.on('chat_message', ({ user, message }) => {
-    appendMessage(`${user}: ${message}`);
-  });
+    // Function to send a chat message
+    function sendMessage() {
+      const message = messageInput.value;
+      if (message.trim() !== '') {
+        // Emit the chat_message event to the server
+        socket.emit('chat_message', message);
 
-  // Function to send a chat message
-  function sendMessage() {
-    const message = messageInput.value;
-    if (message.trim() !== '') {
-      // Emit the chat_message event to the server
-      socket.emit('chat_message', message);
-
-      // Clear the input field
-      messageInput.value = '';
+        // Clear the input field
+        messageInput.value = '';
+      }
     }
-  }
 
-  // Function to append a message to the chat window
-  function appendMessage(displayMessage) {
-    const li = document.createElement('li');
-    li.textContent = displayMessage;
-    chatMessages.appendChild(li);
-  }
-</script>
+    // Function to append a message to the chat window
+    function appendMessage(displayMessage) {
+      const li = document.createElement('li');
+      li.textContent = displayMessage;
+      li.classList.add('mb-2', 'p-2', 'rounded-md', 'bg-white', 'shadow');
+      chatMessages.appendChild(li);
+
+      // Scroll to the bottom to show the latest message
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  </script>
 
 </body>
 </html>
