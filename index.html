@@ -1,80 +1,125 @@
 <!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Socket.IO Chat</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-</head>
-<body class="bg-gray-100 h-screen flex flex-col">
-  <div class="bg-blue-500 text-white p-4">
-    <h1 class="text-2xl font-semibold">Socket.IO Chat</h1>
-  </div>
-
-  <div class="flex-1 flex flex-col p-4 overflow-auto">
-    <ul id="chat-messages" class="list-none flex-1"></ul>
-  </div>
-
-  <div class="bg-gray-200 p-4">
-    <div class="flex space-x-4">
-      <input type="text" id="message-input" placeholder="Type your message..." class="flex-1 border p-2 rounded-md focus:outline-none">
-      <button onclick="sendMessage()" class="bg-blue-500 text-white px-4 py-2 rounded-md">Send</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Socket.IO Chat</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+    />
+  </head>
+  <body class="bg-gray-100 h-screen flex flex-col">
+    <div class="bg-blue-500 text-white p-4">
+      <h1 class="text-2xl font-semibold">COUP in the future</h1>
     </div>
-  </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
-  <script>
-    const socket = io();
-    const chatMessages = document.getElementById('chat-messages');
-    const messageInput = document.getElementById('message-input');
+    <div class="flex-1 flex flex-col p-4 overflow-auto">
+      <ul id="chat-messages" class="list-none flex-1"></ul>
+    </div>
 
-    // Prompt the user for their name
-    const userName = prompt('Enter your name:');
-    socket.emit('submit_name', userName);
+    <div class="bg-gray-200 p-4">
+      <div class="flex space-x-4">
+        <input
+          type="text"
+          id="message-input"
+          placeholder="Type your message..."
+          class="flex-1 border p-2 rounded-md focus:outline-none"
+        />
+        <button
+          onclick="sendMessage()"
+          class="bg-blue-500 text-white px-4 py-2 rounded-md"
+        >
+          Send
+        </button>
+      </div>
+    </div>
 
-    // Handle incoming chat messages and history
-    socket.on('chat_history', (chatHistory) => {
-      chatHistory.forEach(({ user, message }) => {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+    <script>
+      function getRandomUpperCase() {
+        return String.fromCharCode(65 + Math.floor(Math.random() * 26));
+      }
+
+      function generateRandomString(length) {
+        let result = "";
+        for (let i = 0; i < length; i++) {
+          result += getRandomUpperCase();
+        }
+        return result;
+      }
+      const socket = io();
+      const chatMessages = document.getElementById("chat-messages");
+      const messageInput = document.getElementById("message-input");
+
+      // Prompt the user for their name
+      var userName = prompt("Enter your name:");
+
+      const randomUppercaseString = generateRandomString(3);
+
+      if (userName === null || userName.trim() === "") {
+        console.log("Invalid input. Generating a random username instead.");
+        userName = randomUppercaseString;
+      } else {
+        console.log("Hello, " + userName + "!");
+      }
+      socket.emit("submit_name", userName);
+
+      // Handle incoming chat messages and history
+      socket.on("chat_history", (chatHistory) => {
+        chatHistory.forEach(({ user, message }) => {
+          appendMessage(`${user}: ${message}`, user);
+        });
+      });
+
+      socket.on("chat_message", ({ user, message }) => {
         appendMessage(`${user}: ${message}`, user);
       });
-    });
 
-    socket.on('chat_message', ({ user, message }) => {
-      appendMessage(`${user}: ${message}`, user);
-    });
+      // Function to send a chat message
+      function sendMessage() {
+        const message = messageInput.value;
+        if (message.trim() !== "") {
+          // Emit the chat_message event to the server
+          socket.emit("chat_message", message);
 
-    // Function to send a chat message
-    function sendMessage() {
-      const message = messageInput.value;
-      if (message.trim() !== '') {
-        // Emit the chat_message event to the server
-        socket.emit('chat_message', message);
-
-        // Clear the input field
-        messageInput.value = '';
-      }
-    }
-
-    // Function to append a message to the chat window with chat bubbles
-    function appendMessage(displayMessage, author) {
-      const li = document.createElement('li');
-      li.textContent = displayMessage;
-
-      // Apply different styles for the author's messages
-      if (author === userName) {
-        li.classList.add('self-end', 'bg-blue-500', 'text-white', 'rounded-tl-md', 'rounded-bl-md', 'rounded-br-md');
-      } else {
-        li.classList.add('self-start', 'bg-gray-300', 'rounded-tr-md', 'rounded-bl-md', 'rounded-br-md');
+          // Clear the input field
+          messageInput.value = "";
+        }
       }
 
-      li.classList.add('mb-2', 'p-2', 'max-w-xs', 'break-words', 'shadow');
-      chatMessages.appendChild(li);
+      // Function to append a message to the chat window with chat bubbles
+      function appendMessage(displayMessage, author) {
+        const li = document.createElement("li");
+        li.textContent = displayMessage;
 
-      // Scroll to the bottom to show the latest message
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-  </script>
+        // Apply different styles for the author's messages
+        if (author === userName) {
+          li.classList.add(
+            "self-end",
+            "bg-blue-500",
+            "text-white",
+            "rounded-tl-md",
+            "rounded-bl-md",
+            "rounded-br-md"
+          );
+        } else {
+          li.classList.add(
+            "self-start",
+            "bg-gray-300",
+            "rounded-tr-md",
+            "rounded-bl-md",
+            "rounded-br-md"
+          );
+        }
 
-</body>
+        li.classList.add("mb-2", "p-2", "max-w-xs", "break-words", "shadow");
+        chatMessages.appendChild(li);
+
+        // Scroll to the bottom to show the latest message
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    </script>
+  </body>
 </html>
