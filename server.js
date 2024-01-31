@@ -3,6 +3,8 @@ const { randomFill } = require("crypto");
 const express = require("express");
 const http = require("http");
 const socketIO = require("socket.io");
+// Available roles in the Coup game
+const availableRoles = ["Duke", "Assassin", "Captain", "Contessa", "Ambassador"];
 
 const app = express();
 const server = http.createServer(app);
@@ -37,7 +39,14 @@ io.on("connection", (socket) => {
     }
     socket.userName = userName;
     console.log('userName', userName)
+    // Handle role requests
+    socket.on("request_roles", () => {
+        // Assign roles to the player
+        const assignedRoles = assignRoles();
 
+        // Emit the assigned_roles event to the requesting player
+        socket.emit("assigned_roles", assignedRoles);
+    });
     // Send chat history to the new user
     socket.emit("chat_history", chatHistory);
 
@@ -46,6 +55,7 @@ io.on("connection", (socket) => {
       user: "Server",
       message: `${userName} joined the chat`,
     });
+
   });
 
   // Handle chat messages
@@ -66,7 +76,21 @@ io.on("connection", (socket) => {
     }
   });
 });
+// Function to assign roles to players
+function assignRoles() {
+    // Shuffle available roles (for simplicity, you can use a library for better shuffling)
+    const shuffledRoles = [...availableRoles].sort(() => Math.random() - 0.5);
 
+    // Assign roles to players (assuming two players for simplicity)
+    const player1Role = shuffledRoles[0];
+    const player2Role = shuffledRoles[1];
+
+    // Return assigned roles
+    return {
+        player1: player1Role,
+        player2: player2Role,
+    };
+}
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });

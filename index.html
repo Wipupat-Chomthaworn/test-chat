@@ -18,8 +18,13 @@
     <div class="flex-1 flex flex-col p-4 overflow-auto">
       <ul id="chat-messages" class="list-none flex-1"></ul>
     </div>
-    
 
+    <button
+      onclick="requestRoles()"
+      class="bg-green-500 text-white px-4 py-2 rounded-md"
+    >
+      Request Roles
+    </button>
     <div class="bg-gray-200 p-4">
       <div class="flex space-x-4">
         <input
@@ -27,25 +32,25 @@
           id="message-input"
           placeholder="Type your message..."
           class="flex-1 border p-2 rounded-md focus:outline-none"
-        /> 
-    <button
-        onclick="sendAction('Income')"
-        class="bg-blue-500 text-white px-4 py-2 rounded-md"
-    >
-        Income
-    </button>
-    <button
-        onclick="sendAction('ForeignAid')"
-        class="bg-green-500 text-white px-4 py-2 rounded-md"
-    >
-        Foreign Aid
-    </button>
-    <button
-        onclick="sendCoup()"
-        class="bg-red-500 text-white px-4 py-2 rounded-md"
-    >
-        Coup
-    </button>
+        />
+        <button
+          onclick="sendAction('Income')"
+          class="bg-blue-500 text-white px-4 py-2 rounded-md"
+        >
+          Income
+        </button>
+        <button
+          onclick="sendAction('ForeignAid')"
+          class="bg-green-500 text-white px-4 py-2 rounded-md"
+        >
+          Foreign Aid
+        </button>
+        <button
+          onclick="sendCoup()"
+          class="bg-red-500 text-white px-4 py-2 rounded-md"
+        >
+          Coup
+        </button>
         <button
           onclick="sendMessage()"
           class="bg-blue-500 text-white px-4 py-2 rounded-md"
@@ -57,6 +62,13 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
     <script>
+      // Function to send a request for roles
+      function requestRoles() {
+        // Emit the request_roles event to the server
+        socket.emit("request_roles");
+
+        // Optionally, you can perform additional client-side logic here
+      }
       function getRandomUpperCase() {
         return String.fromCharCode(65 + Math.floor(Math.random() * 26));
       }

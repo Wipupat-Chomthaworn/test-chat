@@ -1,0 +1,4 @@
+docker build -t coup-board-game .
+
+
+docker run -p 3000:3000 coup-board-game
