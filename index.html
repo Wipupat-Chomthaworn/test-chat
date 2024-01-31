@@ -18,7 +18,6 @@
     <div class="flex-1 flex flex-col p-4 overflow-auto">
       <ul id="chat-messages" class="list-none flex-1"></ul>
     </div>
-    
 
     <div class="bg-gray-200 p-4">
       <div class="flex space-x-4">
@@ -27,25 +26,25 @@
           id="message-input"
           placeholder="Type your message..."
           class="flex-1 border p-2 rounded-md focus:outline-none"
-        /> 
-    <button
-        onclick="sendAction('Income')"
-        class="bg-blue-500 text-white px-4 py-2 rounded-md"
-    >
-        Income
-    </button>
-    <button
-        onclick="sendAction('ForeignAid')"
-        class="bg-green-500 text-white px-4 py-2 rounded-md"
-    >
-        Foreign Aid
-    </button>
-    <button
-        onclick="sendCoup()"
-        class="bg-red-500 text-white px-4 py-2 rounded-md"
-    >
-        Coup
-    </button>
+        />
+        <button
+          onclick="sendAction('Income')"
+          class="bg-blue-500 text-white px-4 py-2 rounded-md"
+        >
+          Income
+        </button>
+        <button
+          onclick="sendAction('ForeignAid')"
+          class="bg-green-500 text-white px-4 py-2 rounded-md"
+        >
+          Foreign Aid
+        </button>
+        <button
+          onclick="sendCoup()"
+          class="bg-red-500 text-white px-4 py-2 rounded-md"
+        >
+          Coup
+        </button>
         <button
           onclick="sendMessage()"
           class="bg-blue-500 text-white px-4 py-2 rounded-md"
@@ -91,7 +90,13 @@
           appendMessage(`${user}: ${message}`, user);
         });
       });
+      // Function to send general actions
+      function sendAction(action) {
+        // Emit the action_event with the specified action to the server
+        socket.emit("action_event", { action });
 
+        // Optionally, you can perform additional client-side logic here
+      }
       socket.on("chat_message", ({ user, message }) => {
         appendMessage(`${user}: ${message}`, user);
       });
