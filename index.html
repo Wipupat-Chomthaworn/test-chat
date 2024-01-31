@@ -1,4 +1,4 @@
-<!-- index.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,18 +8,64 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 </head>
 <body class="bg-gray-100 h-screen flex flex-col">
-  <div class="bg-blue-500 text-white p-4">
-    <h1 class="text-2xl font-semibold">Socket.IO Chat</h1>
-  </div>
+  <div class="container clearfix mx-auto bg-gray-800 text-white">
+    <div class="people-list" id="people-list">
+      <div class="search p-4">
+        <input type="text" placeholder="search" class="bg-gray-700 text-white px-2 py-1 rounded-md" />
+        <i class="fa fa-search"></i>
+      </div>
+      <ul class="list p-4">
+        <!-- Sample users with avatars and status -->
+        <li class="clearfix mb-2">
+          <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" class="w-10 h-10 rounded-full" />
+          <div class="about ml-2">
+            <div class="name">Vincent Porter</div>
+            <div class="status">
+              <i class="fa fa-circle online"></i> online
+            </div>
+          </div>
+        </li>
 
-  <div class="flex-1 flex flex-col p-4 overflow-auto">
-    <ul id="chat-messages" class="list-none flex-1"></ul>
-  </div>
+        <!-- Add more users as needed -->
+      </ul>
+    </div>
 
-  <div class="bg-gray-200 p-4">
-    <div class="flex space-x-4">
-      <input type="text" id="message-input" placeholder="Type your message..." class="flex-1 border p-2 rounded-md focus:outline-none">
-      <button onclick="sendMessage()" class="bg-blue-500 text-white px-4 py-2 rounded-md">Send</button>
+    <div class="chat bg-white text-gray-800">
+      <div class="chat-header clearfix p-4 border-b-2 border-gray-300">
+        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01_green.jpg" alt="avatar" class="w-10 h-10 rounded-full" />
+
+        <div class="chat-about ml-2">
+          <div class="chat-with">Chat with Vincent Porter</div>
+          <div class="chat-num-messages">already 1,902 messages</div>
+        </div>
+        <i class="fa fa-star text-gray-500"></i>
+      </div>
+
+      <div class="chat-history p-4 overflow-y-auto">
+        <ul>
+          <!-- Sample chat messages -->
+          <li class="clearfix">
+            <div class="message-data align-right">
+              <span class="message-data-time" >10:10 AM, Today</span> &nbsp; &nbsp;
+              <span class="message-data-name" >Olia</span> <i class="fa fa-circle me"></i>
+            </div>
+            <div class="message other-message float-right">
+              Hi Vincent, how are you? How is the project coming along?
+            </div>
+          </li>
+
+          <!-- Add more chat messages as needed -->
+        </ul>
+      </div>
+
+      <div class="chat-message clearfix p-4">
+        <textarea name="message-to-send" id="message-to-send" placeholder="Type your message" rows="3" class="w-full border rounded-md p-2"></textarea>
+
+        <i class="fa fa-file-o text-gray-500"></i> &nbsp;&nbsp;&nbsp;
+        <i class="fa fa-file-image-o text-gray-500"></i>
+
+        <button class="bg-blue-500 text-white px-4 py-2 rounded-md">Send</button>
+      </div>
     </div>
   </div>
 
@@ -89,6 +135,5 @@
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
   </script>
-
 </body>
 </html>
