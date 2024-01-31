@@ -1,4 +1,4 @@
-// index.html
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +31,7 @@
   const userName = prompt('Enter your name:');
   socket.emit('submit_name', userName);
 
-  // Handle incoming chat messages
+  // Handle incoming chat messages and history
   socket.on('chat_history', (chatHistory) => {
     chatHistory.forEach(({ user, message }) => {
       appendMessage(`${user}: ${message}`);
