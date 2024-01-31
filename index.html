@@ -1,4 +1,4 @@
-<!-- index.html -->
+// index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,6 +32,12 @@
   socket.emit('submit_name', userName);
 
   // Handle incoming chat messages
+  socket.on('chat_history', (chatHistory) => {
+    chatHistory.forEach(({ user, message }) => {
+      appendMessage(`${user}: ${message}`);
+    });
+  });
+
   socket.on('chat_message', ({ user, message }) => {
     appendMessage(`${user}: ${message}`);
   });

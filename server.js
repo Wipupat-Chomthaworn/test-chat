@@ -10,46 +10,41 @@ const io = socketIO(server);
 const PORT = process.env.PORT || 3000;
 
 app.use(express.static('public'));
+
+const chatHistory = [];
+
 io.on('connection', (socket) => {
-    console.log('A user connected');
-  
-    // Prompt the user for their name
-    socket.emit('request_name');
-  
-    // Handle user name submission
-    socket.on('submit_name', (userName) => {
-      socket.userName = userName;
-      io.emit('chat_message', { user: 'Server', message: `${userName} joined the chat` });
-    });
-  
-    // Handle chat messages
-    socket.on('chat_message', (message) => {
-      io.emit('chat_message', { user: socket.userName, message });
-    });
-  
-    // Handle user disconnect
-    socket.on('disconnect', () => {
-      console.log('A user disconnected');
-      if (socket.userName) {
-        io.emit('chat_message', { user: 'Server', message: `${socket.userName} left the chat` });
-      }
-    });
+  console.log('A user connected');
+
+  // Prompt the user for their name
+  socket.emit('request_name');
+
+  // Handle user name submission
+  socket.on('submit_name', (userName) => {
+    socket.userName = userName;
+
+    // Send chat history to the new user
+    socket.emit('chat_history', chatHistory);
+
+    // Broadcast to other users that a new user joined
+    io.emit('chat_message', { user: 'Server', message: `${userName} joined the chat` });
   });
-  
-// io.on('connection', (socket) => {
-//   console.log('A user connected');
 
-//   // Handle chat messages
-//   socket.on('chat_message', (message) => {
-//     // Broadcast the message to all connected clients
-//     io.emit('chat_message', message);
-//   });
+  // Handle chat messages
+  socket.on('chat_message', (message) => {
+    const chatMessage = { user: socket.userName, message };
+    chatHistory.push(chatMessage);
+    io.emit('chat_message', chatMessage);
+  });
 
-//   // Handle user disconnect
-//   socket.on('disconnect', () => {
-//     console.log('A user disconnected');
-//   });
-// });
+  // Handle user disconnect
+  socket.on('disconnect', () => {
+    console.log('A user disconnected');
+    if (socket.userName) {
+      io.emit('chat_message', { user: 'Server', message: `${socket.userName} left the chat` });
+    }
+  });
+});
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
