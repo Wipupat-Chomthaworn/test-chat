@@ -1,0 +1,94 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socket.IO Chat</title>
+  <style>
+    #chat-container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="chat-container">
+  <ul id="chat-messages"></ul>
+  <input type="text" id="message-input" placeholder="Type your message...">
+  <button onclick="sendMessage()">Send</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+<script>
+//   const socket = io();
+//   const chatMessages = document.getElementById('chat-messages');
+//   const messageInput = document.getElementById('message-input');
+
+//   // Handle incoming chat messages
+//   socket.on('chat_message', (message) => {
+//     appendMessage(message);
+//   });
+
+//   // Function to send a chat message
+//   function sendMessage() {
+//     const message = messageInput.value;
+//     if (message.trim() !== '') {
+//       // Emit the chat_message event to the server
+//       socket.emit('chat_message', message);
+
+//       // Append the message to the client's chat window
+//       appendMessage(`You: ${message}`);
+
+//       // Clear the input field
+//       messageInput.value = '';
+//     }
+//   }
+
+//   // Function to append a message to the chat window
+//   function appendMessage(message) {
+//     const li = document.createElement('li');
+//     li.textContent = message;
+//     chatMessages.appendChild(li);
+//   }
+const socket = io();
+const chatMessages = document.getElementById('chat-messages');
+const messageInput = document.getElementById('message-input');
+
+// Prompt the user for their name
+const userName = prompt('Enter your name:');
+socket.emit('submit_name', userName);
+
+// Handle incoming chat messages
+socket.on('chat_message', ({ user, message }) => {
+  appendMessage(`${user}: ${message}`);
+});
+
+// Function to send a chat message
+function sendMessage() {
+  const message = messageInput.value;
+  if (message.trim() !== '') {
+    // Emit the chat_message event to the server
+    socket.emit('chat_message', message);
+
+    // Append the message to the client's chat window
+    appendMessage(`You: ${message}`);
+
+    // Clear the input field
+    messageInput.value = '';
+  }
+}
+
+// Function to append a message to the chat window
+function appendMessage(message) {
+  const li = document.createElement('li');
+  li.textContent = message;
+  chatMessages.appendChild(li);
+}
+
+</script>
+
+</body>
+</html>
